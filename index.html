@@ -1,489 +1,487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="The Beyond Conference 2026 - MORE. College of Medicine, LUTH, Lagos. 30th May 2026." />
-  <title>The Beyond Conference 2026 | MORE</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Beyond Community | MORE Conference 2026</title>
+  <meta name="description" content="The Beyond Conference 2026 - MORE. Join us at College of Medicine, LUTH, Lagos on 30th May 2026">
   
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS CDN -->
+  <!-- Google Fonts + Tailwind + GSAP -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- GSAP CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  
-  <!-- React & ReactDOM CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-  
-  <!-- Babel for JSX -->
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   
   <style>
-    /* Custom brand colors override Tailwind */
+    /* Custom brand overrides */
     :root {
       --navy-deep: #000066;
-      --navy-mid: #000080;
+      --navy-dark: #000055;
+      --navy-darker: #000044;
       --gold: #FFD700;
+      --gold-dark: #E6C200;
     }
     
     body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background-color: #000066;
-      font-family: 'Inter', sans-serif;
+      color: white;
       overflow-x: hidden;
     }
     
-    /* Custom gold scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #000033;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #FFD700;
-      border-radius: 8px;
-    }
-    
-    /* Toast animation */
-    @keyframes toastSlide {
-      0% { opacity: 0; transform: translateX(20px); }
-      10% { opacity: 1; transform: translateX(0); }
-      90% { opacity: 1; transform: translateX(0); }
-      100% { opacity: 0; transform: translateX(20px); visibility: hidden; }
-    }
-    
-    .toast-slide {
-      animation: toastSlide 2s ease forwards;
-    }
-    
-    /* Smooth scroll behavior */
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    /* Custom utility classes */
+    /* Custom Tailwind-like utilities (since we use CDN) */
     .bg-navy-deep { background-color: #000066; }
-    .bg-navy-mid { background-color: #000080; }
+    .bg-navy-dark { background-color: #000055; }
+    .bg-navy-darker { background-color: #000044; }
+    .bg-navy-800 { background-color: #000033; }
+    .bg-navy-900 { background-color: #000022; }
     .text-gold { color: #FFD700; }
     .border-gold { border-color: #FFD700; }
     .from-gold { --tw-gradient-from: #FFD700; }
-    .to-gold { --tw-gradient-to: #FFD700; }
-    .shadow-gold { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+    .to-gold-dark { --tw-gradient-to: #E6C200; }
+    
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Progress bar shimmer */
+    .progress-shimmer {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    /* Hide scrollbar on menu overlay but keep functionality */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Netflix-style glow */
+    .logo-glow {
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .menu-item {
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    /* Toast animation */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .toast-slide {
+      animation: slideUp 0.3s ease forwards;
+    }
   </style>
 </head>
-<body>
-  <div id="root"></div>
-  
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-    
-    // Register GSAP plugin
+<body class="antialiased">
+
+  <!-- Sticky Header -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-[#000066]/80 backdrop-blur-md py-3 px-6 md:px-12 flex justify-between items-center border-b border-[#FFD700]/30 transition-all duration-300" id="mainHeader">
+    <img 
+      id="logoHeader"
+      src="https://image2url.com/r2/default/images/1775492166817-4df4e1ed-3e50-4fc4-96ad-42b628eec777.jpg" 
+      alt="The Beyond Community Logo" 
+      class="h-10 md:h-12 w-auto rounded-full border border-[#FFD700]/40 shadow-md"
+    />
+    <button id="menuToggleBtn" class="text-[#FFD700] hover:text-[#E6C200] transition-all focus:outline-none z-50 relative" aria-label="Menu">
+      <svg id="menuIconOpen" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      <svg id="menuIconClose" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x hidden" style="position:absolute; top:0; left:0;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </header>
+
+  <!-- Fullscreen Menu Overlay (GSAP animated) -->
+  <div id="menuOverlay" class="fixed inset-0 z-40 bg-[#000033]/95 backdrop-blur-xl flex items-center justify-center invisible" style="clip-path: circle(0% at 100% 0%);">
+    <ul class="text-center space-y-8 md:space-y-10 px-6">
+      <li class="menu-item text-3xl md:text-5xl lg:text-6xl font-bold text-[#FFD700] hover:text-white cursor-pointer transition" data-nav="home">Home</li>
+      <li class="menu-item text-3xl md:text-5xl lg:text-6xl font-bold text-[#FFD700] hover:text-white cursor-pointer transition" data-nav="vision">Our Vision</li>
+      <li class="menu-item text-3xl md:text-5xl lg:text-6xl font-bold text-[#FFD700] hover:text-white cursor-pointer transition" data-nav="partnerships">Partnerships/Support</li>
+      <li class="menu-item text-3xl md:text-5xl lg:text-6xl font-bold text-[#FFD700] hover:text-white cursor-pointer transition" data-nav="volunteers">Volunteers</li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- HERO Section -->
+    <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-[#000033]/30 to-[#000066]/40 pointer-events-none"></div>
+      <img 
+        id="heroLogo"
+        src="https://image2url.com/r2/default/images/1775492166817-4df4e1ed-3e50-4fc4-96ad-42b628eec777.jpg" 
+        alt="The Beyond Community" 
+        class="w-40 md:w-56 lg:w-64 mb-8 rounded-full shadow-2xl border-4 border-[#FFD700]/40 logo-glow"
+      />
+      <h1 class="text-3xl md:text-6xl lg:text-7xl font-bold text-[#FFD700] animate-on-scroll tracking-tight">THE BEYOND CONFERENCE 2026</h1>
+      <p class="text-5xl md:text-7xl lg:text-8xl font-black text-white my-4 md:my-6 animate-on-scroll drop-shadow-lg">MORE</p>
+      <div class="text-white text-base md:text-lg lg:text-xl space-y-2 animate-on-scroll bg-black/20 backdrop-blur-sm px-6 py-4 rounded-2xl">
+        <p>📍 Venue: College of Medicine, LUTH, Lagos</p>
+        <p>📅 Date: 30th May 2026</p>
+        <p>👤 Convener: Bookola</p>
+      </div>
+    </section>
+
+    <!-- VISION Section -->
+    <section id="vision" class="py-20 px-6 md:px-12 bg-[#000055]">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold text-[#FFD700] mb-12 text-center animate-on-scroll">Our Vision</h2>
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="space-y-6 animate-on-scroll">
+            <p class="text-lg md:text-xl leading-relaxed">To inspire a generation to pursue the <span class="text-[#FFD700] font-semibold">"MORE"</span> that lies within—unlocking divine potential and transforming communities through faith, purpose, and action.</p>
+            <div class="h-1 w-20 bg-[#FFD700] rounded-full"></div>
+            <p class="text-white/80 italic">"Beyond boundaries, beyond limits—into your destiny."</p>
+          </div>
+          <ul class="space-y-4 animate-on-scroll">
+            <li class="flex items-center gap-3 text-base md:text-lg group"><span class="text-[#FFD700] text-2xl md:text-3xl group-hover:scale-110 transition">✦</span> <span class="group-hover:text-[#FFD700] transition">Who you are</span></li>
+            <li class="flex items-center gap-3 text-base md:text-lg group"><span class="text-[#FFD700] text-2xl md:text-3xl group-hover:scale-110 transition">✦</span> <span class="group-hover:text-[#FFD700] transition">What you can achieve</span></li>
+            <li class="flex items-center gap-3 text-base md:text-lg group"><span class="text-[#FFD700] text-2xl md:text-3xl group-hover:scale-110 transition">✦</span> <span class="group-hover:text-[#FFD700] transition">What God can do</span></li>
+            <li class="flex items-center gap-3 text-base md:text-lg group"><span class="text-[#FFD700] text-2xl md:text-3xl group-hover:scale-110 transition">✦</span> <span class="group-hover:text-[#FFD700] transition">What is waiting to be discovered</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINANCIAL TRACKER Section -->
+    <section id="partnerships" class="py-20 px-6 md:px-12 bg-[#000044]">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold text-[#FFD700] mb-12 text-center animate-on-scroll">Partnerships & Support</h2>
+        <div class="bg-[#000033] rounded-2xl p-6 md:p-8 shadow-2xl border border-[#FFD700]/30">
+          <!-- Progress Bar -->
+          <div class="mb-8">
+            <div class="flex justify-between text-white mb-2 text-sm md:text-base">
+              <span class="font-semibold">Progress: ₦<span id="currentAmountDisplay">0</span></span>
+              <span class="font-semibold">Goal: ₦2,400,000</span>
+            </div>
+            <div class="w-full bg-[#000022] rounded-full h-5 overflow-hidden">
+              <div id="progressFill" class="bg-gradient-to-r from-[#FFD700] to-[#E6C200] h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden" style="width: 0%">
+                <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+              </div>
+            </div>
+            <p class="text-right text-sm text-white/60 mt-2"><span id="percentageLabel">0</span>% funded</p>
+          </div>
+
+          <!-- Demo Input for easy update (Current / Goal logic) -->
+          <div class="mb-6">
+            <label class="text-white/80 text-sm block mb-2">Update current donation (Demo):</label>
+            <input type="number" id="amountInput" value="0" class="w-full bg-[#000055] text-white px-4 py-3 rounded-lg border border-[#FFD700]/40 focus:border-[#FFD700] focus:outline-none transition" placeholder="Enter amount in Naira">
+            <p class="text-xs text-white/50 mt-1">* Change amount to see gold progress bar update instantly</p>
+          </div>
+
+          <!-- Bank Details & Copy -->
+          <div class="bg-[#000055] rounded-xl p-5 border border-[#FFD700]/20">
+            <p class="text-[#FFD700] font-semibold mb-3 text-sm uppercase tracking-wide">Bank Transfer Details</p>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p class="font-mono text-lg md:text-xl text-[#FFD700] font-bold tracking-wider">7350104678 | Wema Bank</p>
+                <p class="text-white">Bukola D. Adewuyi</p>
+              </div>
+              <button id="copyAccountBtn" class="flex items-center justify-center gap-2 bg-[#FFD700] text-[#000066] px-5 py-2.5 rounded-lg font-semibold hover:bg-[#E6C200] transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy Account Number
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUNTEERS Grid Section -->
+    <section id="volunteers" class="py-20 px-6 md:px-12 bg-[#000066]">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold text-[#FFD700] mb-4 text-center animate-on-scroll">Volunteer Teams</h2>
+        <p class="text-center text-white/80 mb-12 max-w-2xl mx-auto animate-on-scroll">Join our dedicated teams and be part of something extraordinary</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <!-- 5 volunteer cards -->
+          <div class="bg-[#000044] rounded-xl p-6 text-center hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border border-[#FFD700]/30 group cursor-pointer">
+            <div class="text-5xl mb-3 group-hover:scale-110 transition inline-block">📝</div>
+            <h3 class="text-xl font-bold text-[#FFD700] mb-2">Registration</h3>
+            <p class="text-white/70 text-sm">Manage attendee check-ins</p>
+          </div>
+          <div class="bg-[#000044] rounded-xl p-6 text-center hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border border-[#FFD700]/30 group cursor-pointer">
+            <div class="text-5xl mb-3 group-hover:scale-110 transition inline-block">📸</div>
+            <h3 class="text-xl font-bold text-[#FFD700] mb-2">Media</h3>
+            <p class="text-white/70 text-sm">Capture & social media</p>
+          </div>
+          <div class="bg-[#000044] rounded-xl p-6 text-center hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border border-[#FFD700]/30 group cursor-pointer">
+            <div class="text-5xl mb-3 group-hover:scale-110 transition inline-block">👋</div>
+            <h3 class="text-xl font-bold text-[#FFD700] mb-2">Ushering/Protocol</h3>
+            <p class="text-white/70 text-sm">Guide & VIP management</p>
+          </div>
+          <div class="bg-[#000044] rounded-xl p-6 text-center hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border border-[#FFD700]/30 group cursor-pointer">
+            <div class="text-5xl mb-3 group-hover:scale-110 transition inline-block">❤️</div>
+            <h3 class="text-xl font-bold text-[#FFD700] mb-2">Welfare</h3>
+            <p class="text-white/70 text-sm">Attendee comfort</p>
+          </div>
+          <div class="bg-[#000044] rounded-xl p-6 text-center hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border border-[#FFD700]/30 group cursor-pointer">
+            <div class="text-5xl mb-3 group-hover:scale-110 transition inline-block">🚚</div>
+            <h3 class="text-xl font-bold text-[#FFD700] mb-2">Logistics</h3>
+            <p class="text-white/70 text-sm">Equipment & setup</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-8 text-center bg-[#000022] border-t border-[#FFD700]/20">
+    <p class="text-white/60 text-sm">© 2026 The Beyond Community. All rights reserved.</p>
+    <p class="text-white/40 text-xs mt-2">Empowering lives through faith, purpose, and action</p>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50"></div>
+
+  <script>
+    // Initialize GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
     
-    // Main App Component
-    const App = () => {
-      const [menuOpen, setMenuOpen] = useState(false);
-      const [copied, setCopied] = useState(false);
-      const [currentAmount, setCurrentAmount] = useState(0);
-      const goalAmount = 2400000;
-      const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
-      
-      // Refs for animations
-      const logoContainerRef = useRef(null);
-      const heroTitleRef = useRef(null);
-      const heroMetaRef = useRef(null);
-      const visionRef = useRef(null);
-      const moreBulletsRef = useRef([]);
-      const partnershipsRef = useRef(null);
-      const volunteersRef = useRef(null);
-      const menuOverlayRef = useRef(null);
-      const menuLinksRef = useRef([]);
-      const menuIconRef = useRef(null);
-      
-      // Netflix-style logo animation on mount
-      useEffect(() => {
-        // Small delay to ensure DOM is ready
-        const timer = setTimeout(() => {
-          const ctx = gsap.context(() => {
-            gsap.set(logoContainerRef.current, { scale: 0.2, opacity: 0, filter: 'blur(8px)' });
-            
-            const tl = gsap.timeline();
-            tl.to(logoContainerRef.current, {
-              scale: 1.2,
-              opacity: 1,
-              filter: 'blur(0px)',
-              duration: 1.2,
-              ease: 'power2.out',
-            })
-            .add(() => {
-              gsap.to(logoContainerRef.current, {
-                boxShadow: '0 0 40px rgba(255,215,0,0.9)',
-                duration: 0.2,
-                repeat: 1,
-                yoyo: true,
-              });
-              gsap.to(logoContainerRef.current, {
-                backgroundColor: 'rgba(255,215,0,0.3)',
-                duration: 0.15,
-                repeat: 1,
-                yoyo: true,
-              });
-            }, '-=0.2')
-            .to(logoContainerRef.current, {
-              scale: 1,
-              duration: 0.6,
-              ease: 'back.out(0.6)',
-            })
-            .fromTo(heroTitleRef.current, 
-              { y: 50, opacity: 0, filter: 'blur(6px)' },
-              { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' },
-              '-=0.3'
-            )
-            .fromTo(heroMetaRef.current, 
-              { y: 30, opacity: 0 },
-              { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' },
-              '-=0.4'
-            );
-          });
-          return () => ctx.revert();
-        }, 100);
-        
-        return () => clearTimeout(timer);
-      }, []);
-      
-      // ScrollTrigger for sections
-      useEffect(() => {
-        const ctx = gsap.context(() => {
-          // Vision section
-          gsap.from(visionRef.current, {
-            scrollTrigger: {
-              trigger: visionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
-            },
-            y: 60,
-            opacity: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-          });
-          
-          // Bullet points
-          if (moreBulletsRef.current.length) {
-            gsap.from(moreBulletsRef.current, {
-              scrollTrigger: {
-                trigger: visionRef.current,
-                start: 'top 70%',
-              },
-              y: 40,
-              opacity: 0,
-              stagger: 0.2,
-              duration: 0.7,
-              ease: 'back.out(0.5)',
-            });
-          }
-          
-          // Partnerships
-          gsap.from(partnershipsRef.current, {
-            scrollTrigger: {
-              trigger: partnershipsRef.current,
-              start: 'top 80%',
-            },
-            y: 50,
-            opacity: 0,
-            duration: 0.8,
-          });
-          
-          // Volunteers grid
-          gsap.from(volunteersRef.current, {
-            scrollTrigger: {
-              trigger: volunteersRef.current,
-              start: 'top 85%',
-            },
-            y: 40,
-            opacity: 0,
-            stagger: 0.12,
-            duration: 0.7,
-            ease: 'power2.out',
-          });
-        });
-        
-        return () => ctx.revert();
-      }, []);
-      
-      // Menu overlay animation
-      useEffect(() => {
-        if (menuOpen) {
-          gsap.set(menuOverlayRef.current, { display: 'flex', opacity: 0 });
-          gsap.to(menuOverlayRef.current, {
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.inOut',
-          });
-          gsap.fromTo(menuLinksRef.current,
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'back.out(0.4)', delay: 0.2 }
-          );
-        } else {
-          gsap.to(menuOverlayRef.current, {
-            opacity: 0,
-            duration: 0.4,
-            ease: 'power2.in',
-            onComplete: () => {
-              gsap.set(menuOverlayRef.current, { display: 'none' });
-            },
-          });
-        }
-      }, [menuOpen]);
-      
-      // Hamburger to X morph
-      useEffect(() => {
-        if (menuIconRef.current) {
-          const topLine = menuIconRef.current.querySelector('.line-top');
-          const middleLine = menuIconRef.current.querySelector('.line-middle');
-          const bottomLine = menuIconRef.current.querySelector('.line-bottom');
-          if (menuOpen) {
-            gsap.to(topLine, { rotate: 45, y: 8, duration: 0.3 });
-            gsap.to(middleLine, { opacity: 0, duration: 0.2 });
-            gsap.to(bottomLine, { rotate: -45, y: -8, duration: 0.3 });
-          } else {
-            gsap.to(topLine, { rotate: 0, y: 0, duration: 0.3 });
-            gsap.to(middleLine, { opacity: 1, duration: 0.2 });
-            gsap.to(bottomLine, { rotate: 0, y: 0, duration: 0.3 });
-          }
-        }
-      }, [menuOpen]);
-      
-      const toggleMenu = () => setMenuOpen(prev => !prev);
-      const closeMenu = () => setMenuOpen(false);
-      
-      const handleCopyAccount = async () => {
-        try {
-          await navigator.clipboard.writeText("7350104678");
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-          console.error("Failed to copy");
-        }
-      };
-      
-      const updateAmount = (value) => {
-        let newVal = Number(value);
-        if (isNaN(newVal)) newVal = 0;
-        setCurrentAmount(Math.min(Math.max(newVal, 0), goalAmount));
-      };
-      
-      const scrollToSection = (sectionId) => {
-        closeMenu();
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      };
-      
-      return (
-        <div className="bg-[#000066] min-h-screen overflow-x-hidden text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
-          {/* Sticky Header */}
-          <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-4 bg-[#000066]/80 backdrop-blur-sm">
-            <div 
-              ref={logoContainerRef}
-              className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg border-2 border-[#FFD700] flex items-center justify-center bg-[#000080]"
-            >
-              <img 
-                src="https://image2url.com/r2/default/images/1775492166817-4df4e1ed-3e50-4fc4-96ad-42b628eec777.jpg" 
-                alt="Beyond Community Logo" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <button 
-              onClick={toggleMenu}
-              className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none z-50"
-              ref={menuIconRef}
-              aria-label="Menu"
-            >
-              <span className="line-top block w-6 h-0.5 bg-[#FFD700] mb-1.5 transition-all duration-200"></span>
-              <span className="line-middle block w-6 h-0.5 bg-[#FFD700] mb-1.5 transition-all duration-200"></span>
-              <span className="line-bottom block w-6 h-0.5 bg-[#FFD700] transition-all duration-200"></span>
-            </button>
-          </header>
-          
-          {/* Fullscreen Menu Overlay */}
-          <div 
-            ref={menuOverlayRef}
-            className="fixed inset-0 z-40 bg-[#000066]/95 backdrop-blur-md hidden flex-col justify-center items-center"
-          >
-            <nav className="flex flex-col space-y-8 text-center">
-              {['Home', 'Our Vision', 'Partnerships', 'Volunteers'].map((item, idx) => (
-                <button
-                  key={item}
-                  onClick={() => scrollToSection(item === 'Home' ? 'hero' : item.toLowerCase())}
-                  ref={el => menuLinksRef.current[idx] = el}
-                  className="text-4xl md:text-6xl font-bold text-[#FFD700] hover:text-white transition-all duration-300 tracking-wider"
-                >
-                  {item}
-                </button>
-              ))}
-            </nav>
-          </div>
-          
-          <main>
-            {/* Hero Section */}
-            <section id="hero" className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-16">
-              <div className="max-w-5xl mx-auto">
-                <h1 ref={heroTitleRef} className="text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-wider leading-tight">
-                  <span className="text-[#FFD700]">THE BEYOND</span><br />
-                  <span className="text-white">CONFERENCE 2026</span>
-                </h1>
-                <div ref={heroMetaRef} className="mt-8 space-y-4 text-lg md:text-2xl font-light">
-                  <div className="inline-block bg-[#FFD700]/10 backdrop-blur-sm px-6 py-2 rounded-full border border-[#FFD700]/40">
-                    <span className="text-[#FFD700] font-bold text-3xl md:text-5xl mr-3">✦</span> 
-                    THEME: <span className="font-bold text-[#FFD700]">"MORE"</span> 
-                    <span className="text-[#FFD700] font-bold text-3xl md:text-5xl ml-3">✦</span>
-                  </div>
-                  <p className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-white/90">
-                    <span>📍 Venue: College of Medicine, LUTH, Lagos</span>
-                    <span>📅 Date: 30th May 2026</span>
-                    <span>🎤 Convener: Bookola</span>
-                  </p>
-                </div>
-              </div>
-              <div className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce">
-                <div className="w-6 h-10 border-2 border-[#FFD700] rounded-full flex justify-center">
-                  <div className="w-1 h-3 bg-[#FFD700] rounded-full mt-2 animate-pulse"></div>
-                </div>
-              </div>
-            </section>
-            
-            {/* Our Vision Section */}
-            <section id="our vision" className="py-20 px-6 md:px-12 bg-[#000080]/30">
-              <div className="max-w-6xl mx-auto" ref={visionRef}>
-                <h2 className="text-4xl md:text-6xl font-bold text-[#FFD700] border-l-8 border-[#FFD700] pl-6 mb-12">Our Vision</h2>
-                <div className="grid md:grid-cols-2 gap-12">
-                  <div>
-                    <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 italic">
-                      "To ignite a global movement where every believer steps into <span className="text-[#FFD700] font-bold">MORE</span> — beyond limits, beyond imagination, beyond the ordinary."
-                    </p>
-                  </div>
-                  <div className="space-y-6">
-                    {[
-                      { title: "Who you are", desc: "Discover your true identity in Christ — royalty and purpose." },
-                      { title: "What you can achieve", desc: "Unlock divine strategies for unprecedented impact." },
-                      { title: "What God can do", desc: "Experience miraculous testimonies and supernatural power." },
-                      { title: "What is waiting to be discovered", desc: "Step into realms of glory, wisdom, and hidden treasures." }
-                    ].map((item, idx) => (
-                      <div 
-                        key={idx}
-                        ref={el => moreBulletsRef.current[idx] = el}
-                        className="bg-white/5 backdrop-blur-sm p-5 rounded-xl border-l-4 border-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.2)] transition-all"
-                      >
-                        <h3 className="text-2xl font-bold text-[#FFD700]">{item.title}</h3>
-                        <p className="text-white/80 mt-1">{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-            
-            {/* Partnerships Section */}
-            <section id="partnerships" className="py-20 px-6 md:px-12" ref={partnershipsRef}>
-              <div className="max-w-5xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-bold text-[#FFD700] text-center mb-6">Partnerships & Support</h2>
-                <div className="bg-[#000080]/60 rounded-3xl p-6 md:p-10 shadow-2xl border border-[#FFD700]/30">
-                  <div className="mb-8">
-                    <div className="flex justify-between text-sm md:text-base font-semibold mb-2">
-                      <span className="text-white/80">Financial Progress</span>
-                      <span className="text-[#FFD700]">₦{currentAmount.toLocaleString()} / ₦{goalAmount.toLocaleString()}</span>
-                    </div>
-                    <div className="w-full bg-[#000066] rounded-full h-5 overflow-hidden shadow-inner">
-                      <div 
-                        className="bg-gradient-to-r from-[#FFD700] to-yellow-400 h-5 rounded-full transition-all duration-700 ease-out"
-                        style={{ width: `${percentage}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-right text-xs text-white/50 mt-1">Goal: ₦2.4 Million</p>
-                  </div>
-                  
-                  <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-8 p-4 bg-black/30 rounded-2xl">
-                    <div className="flex-1 text-center md:text-left">
-                      <p className="text-sm text-white/70">Bank Transfer Details</p>
-                      <div className="flex flex-wrap items-center gap-3 mt-1">
-                        <span className="font-mono text-xl font-bold tracking-wider text-[#FFD700]">7350104678</span>
-                        <span className="text-white">| Wema Bank</span>
-                        <span className="text-white/90">Bukola D. Adewuyi</span>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={handleCopyAccount}
-                      className="bg-[#FFD700] text-[#000066] font-bold py-2 px-6 rounded-full flex items-center gap-2 hover:bg-white transition-all duration-300 shadow-lg"
-                    >
-                      📋 Copy Account Number
-                    </button>
-                  </div>
-                  
-                  {/* Demo amount updater */}
-                  <div className="mt-6 flex flex-wrap justify-end items-center gap-3 pt-4 border-t border-white/10">
-                    <span className="text-xs text-white/50">Quick update (demo):</span>
-                    <input 
-                      type="number" 
-                      value={currentAmount}
-                      onChange={(e) => updateAmount(e.target.value)}
-                      className="bg-[#000066] border border-[#FFD700]/50 rounded-lg px-3 py-1 w-36 text-[#FFD700] text-sm focus:outline-none"
-                      placeholder="Enter amount"
-                    />
-                    <button onClick={() => updateAmount(1200000)} className="text-xs bg-[#FFD700]/20 px-3 py-1 rounded-full text-[#FFD700] hover:bg-[#FFD700]/30">Set ₦1.2M</button>
-                    <button onClick={() => updateAmount(goalAmount)} className="text-xs bg-[#FFD700]/20 px-3 py-1 rounded-full text-[#FFD700] hover:bg-[#FFD700]/30">Full Goal</button>
-                  </div>
-                </div>
-              </div>
-            </section>
-            
-            {/* Volunteers Section */}
-            <section id="volunteers" className="py-20 px-6 md:px-12 bg-[#000080]/40">
-              <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-bold text-[#FFD700] text-center mb-12">Volunteer Teams</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5" ref={volunteersRef}>
-                  {[
-                    { name: "Registration", icon: "📝", desc: "Welcome desk & check-in" },
-                    { name: "Media", icon: "🎥", desc: "Photography & content" },
-                    { name: "Ushering", icon: "🚪", desc: "Guest direction" },
-                    { name: "Welfare", icon: "🍲", desc: "Hospitality" },
-                    { name: "Logistics", icon: "🚚", desc: "Setup & transport" }
-                  ].map((role, idx) => (
-                    <div key={idx} className="bg-gradient-to-b from-[#000066] to-[#000080] p-6 rounded-2xl text-center border border-[#FFD700]/30 hover:border-[#FFD700] transition-all duration-300 group">
-                      <div className="text-5xl mb-3">{role.icon}</div>
-                      <h3 className="text-xl font-bold text-[#FFD700] mb-2">{role.name}</h3>
-                      <p className="text-sm text-white/70">{role.desc}</p>
-                      <button className="mt-4 text-[#FFD700] border border-[#FFD700]/50 rounded-full px-4 py-1 text-xs hover:bg-[#FFD700] hover:text-[#000066] transition-all">Join Team</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-            
-            {/* Footer */}
-            <footer className="py-10 text-center border-t border-[#FFD700]/20 text-white/60 text-sm">
-              <p>© 2026 The Beyond Community — "MORE" Conference. All Rights Reserved.</p>
-              <p className="mt-2">College of Medicine, LUTH, Lagos | 30th May 2026</p>
-            </footer>
-          </main>
-          
-          {/* Toast Notification */}
-          {copied && (
-            <div className="fixed bottom-6 right-6 z-50 bg-[#FFD700] text-[#000066] px-5 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold toast-slide">
-              <span>✅</span> Copied! 7350104678
-            </div>
-          )}
-        </div>
-      );
-    };
+    // -------------------------------
+    // 1. Netflix-style Logo Animation
+    // -------------------------------
+    const heroLogo = document.getElementById('heroLogo');
+    if (heroLogo) {
+      const tl = gsap.timeline();
+      tl.fromTo(heroLogo, 
+        { scale: 0.1, opacity: 0, filter: "blur(12px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }
+      )
+      .to(heroLogo, {
+        boxShadow: "0 0 35px 18px rgba(255,215,0,0.6)",
+        duration: 0.5,
+        repeat: 1,
+        yoyo: true,
+        ease: "power1.inOut"
+      }, "-=0.3");
+    }
+
+    // -------------------------------
+    // 2. ScrollTrigger: Reveal sections
+    // -------------------------------
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
     
-    // Render the app
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    function checkScrollVisibility() {
+      animateElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        if (rect.top < windowHeight - 100) {
+          el.classList.add('visible');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', checkScrollVisibility);
+    window.addEventListener('load', checkScrollVisibility);
+    checkScrollVisibility();
+    
+    // Also GSAP ScrollTrigger for extra smoothness on sections
+    const sections = ['#home', '#vision', '#partnerships', '#volunteers'];
+    sections.forEach(sectionId => {
+      const section = document.querySelector(sectionId);
+      if (section) {
+        gsap.fromTo(section.querySelectorAll('.animate-on-scroll:not(.visible)'),
+          { y: 50, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      }
+    });
+
+    // -------------------------------
+    // 3. Financial Tracker Logic (Current / Goal = #0 / #2.4M)
+    // -------------------------------
+    const amountInput = document.getElementById('amountInput');
+    const currentAmountSpan = document.getElementById('currentAmountDisplay');
+    const progressFill = document.getElementById('progressFill');
+    const percentageLabel = document.getElementById('percentageLabel');
+    const GOAL = 2400000;
+    
+    function updateProgress(value) {
+      let current = parseInt(value) || 0;
+      if (current > GOAL) current = GOAL;
+      const percent = (current / GOAL) * 100;
+      progressFill.style.width = `${percent}%`;
+      currentAmountSpan.innerText = current.toLocaleString();
+      percentageLabel.innerText = percent.toFixed(1);
+    }
+    
+    amountInput.addEventListener('input', (e) => {
+      updateProgress(e.target.value);
+    });
+    updateProgress(0); // initial 0
+    
+    // -------------------------------
+    // 4. Copy to Clipboard with Toast
+    // -------------------------------
+    const copyBtn = document.getElementById('copyAccountBtn');
+    const toastContainer = document.getElementById('toastContainer');
+    
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast-slide bg-${type === 'success' ? 'green-500' : 'red-500'} text-white px-5 py-3 rounded-lg shadow-2xl mb-3 flex items-center gap-2 font-medium`;
+      toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> ${message}`;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 2500);
+    }
+    
+    copyBtn.addEventListener('click', async () => {
+      const accountText = "7350104678";
+      try {
+        await navigator.clipboard.writeText(accountText);
+        showToast('Account number 7350104678 copied!', 'success');
+      } catch (err) {
+        showToast('Failed to copy', 'error');
+      }
+    });
+    
+    // -------------------------------
+    // 5. Hamburger Menu (Three-dash) morph to X + GSAP Fullscreen Overlay
+    // -------------------------------
+    const menuToggle = document.getElementById('menuToggleBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const menuIconOpen = document.getElementById('menuIconOpen');
+    const menuIconClose = document.getElementById('menuIconClose');
+    let isMenuOpen = false;
+    
+    function openMenu() {
+      if (!menuOverlay) return;
+      gsap.killTweensOf(menuOverlay);
+      menuOverlay.style.visibility = 'visible';
+      gsap.to(menuOverlay, {
+        duration: 0.6,
+        clipPath: "circle(150% at 100% 0%)",
+        ease: "power4.inOut",
+        onStart: () => {
+          menuOverlay.style.visibility = 'visible';
+        }
+      });
+      // Animate menu items with stagger slide-up
+      const menuItems = document.querySelectorAll('#menuOverlay .menu-item');
+      gsap.fromTo(menuItems,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: "back.out(1.2)", delay: 0.2 }
+      );
+      isMenuOpen = true;
+      // Toggle icons
+      menuIconOpen.classList.add('hidden');
+      menuIconClose.classList.remove('hidden');
+    }
+    
+    function closeMenu() {
+      if (!menuOverlay) return;
+      gsap.to(menuOverlay, {
+        duration: 0.5,
+        clipPath: "circle(0% at 100% 0%)",
+        ease: "power4.inOut",
+        onComplete: () => {
+          menuOverlay.style.visibility = 'hidden';
+        }
+      });
+      isMenuOpen = false;
+      menuIconOpen.classList.remove('hidden');
+      menuIconClose.classList.add('hidden');
+    }
+    
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isMenuOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+    
+    // Navigation from menu overlay
+    const navItems = document.querySelectorAll('#menuOverlay .menu-item');
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const targetId = item.getAttribute('data-nav');
+        if (targetId) {
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }
+          closeMenu();
+        }
+      });
+    });
+    
+    // Close menu when clicking outside (optional, but nice)
+    document.addEventListener('click', (e) => {
+      if (isMenuOpen && !menuOverlay.contains(e.target) && !menuToggle.contains(e.target)) {
+        closeMenu();
+      }
+    });
+    
+    // -------------------------------
+    // 6. Extra polish: Update any external GSAP triggers, plus logo on scroll
+    // -------------------------------
+    window.addEventListener('load', () => {
+      // Fix any initial animation issues
+      ScrollTrigger.refresh();
+      // Make hero elements extra pop
+      const heroElements = document.querySelectorAll('#home .animate-on-scroll');
+      heroElements.forEach(el => el.classList.add('visible'));
+    });
+    
+    // Re-trigger ScrollTrigger after images/fonts
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
+    
+    // Simple shimmer for progress bar on update
+    const progressFillEl = document.getElementById('progressFill');
+    amountInput.addEventListener('change', () => {
+      if (progressFillEl) {
+        progressFillEl.style.transition = 'width 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+      }
+    });
+    
+    // Smooth scroll for any anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+    
+    // Additional: Refresh GSAP on window resize
+    window.addEventListener('resize', () => {
+      ScrollTrigger.refresh();
+    });
   </script>
+  <!-- Ensure Lucide icons are replaced if needed but we used inline SVG -->
 </body>
 </html>
