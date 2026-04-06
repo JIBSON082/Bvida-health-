@@ -1,84 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="The Beyond Conference 2026 - More. College of Medicine, LUTH, Lagos. 30th May 2026." />
-    <title>The Beyond Conference 2026 | MORE</title>
-    <!-- Preconnect for fonts and CDN -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background-color: #000066;
-        font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-      }
-      /* Custom gold scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #000033;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #FFD700;
-        border-radius: 8px;
-      }
-      /* Toast animation */
-      .toast-slide {
-        animation: toastSlide 2s ease forwards;
-      }
-      @keyframes toastSlide {
-        0% { opacity: 0; transform: translateX(20px); }
-        10% { opacity: 1; transform: translateX(0); }
-        90% { opacity: 1; transform: translateX(0); }
-        100% { opacity: 0; transform: translateX(20px); visibility: hidden; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module">
-      import React, { useState, useEffect, useRef, useCallback } from 'react';
-      import { createRoot } from 'react-dom/client';
-      import gsap from 'gsap';
-      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="The Beyond Conference 2026 - MORE. College of Medicine, LUTH, Lagos. 30th May 2026." />
+  <title>The Beyond Conference 2026 | MORE</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  
+  <!-- Babel for JSX -->
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    /* Custom brand colors override Tailwind */
+    :root {
+      --navy-deep: #000066;
+      --navy-mid: #000080;
+      --gold: #FFD700;
+    }
+    
+    body {
+      background-color: #000066;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Custom gold scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000033;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FFD700;
+      border-radius: 8px;
+    }
+    
+    /* Toast animation */
+    @keyframes toastSlide {
+      0% { opacity: 0; transform: translateX(20px); }
+      10% { opacity: 1; transform: translateX(0); }
+      90% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(20px); visibility: hidden; }
+    }
+    
+    .toast-slide {
+      animation: toastSlide 2s ease forwards;
+    }
+    
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Custom utility classes */
+    .bg-navy-deep { background-color: #000066; }
+    .bg-navy-mid { background-color: #000080; }
+    .text-gold { color: #FFD700; }
+    .border-gold { border-color: #FFD700; }
+    .from-gold { --tw-gradient-from: #FFD700; }
+    .to-gold { --tw-gradient-to: #FFD700; }
+    .shadow-gold { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    
+    // Register GSAP plugin
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Main App Component
+    const App = () => {
+      const [menuOpen, setMenuOpen] = useState(false);
+      const [copied, setCopied] = useState(false);
+      const [currentAmount, setCurrentAmount] = useState(0);
+      const goalAmount = 2400000;
+      const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
       
-      // Register GSAP plugins
-      gsap.registerPlugin(ScrollTrigger);
+      // Refs for animations
+      const logoContainerRef = useRef(null);
+      const heroTitleRef = useRef(null);
+      const heroMetaRef = useRef(null);
+      const visionRef = useRef(null);
+      const moreBulletsRef = useRef([]);
+      const partnershipsRef = useRef(null);
+      const volunteersRef = useRef(null);
+      const menuOverlayRef = useRef(null);
+      const menuLinksRef = useRef([]);
+      const menuIconRef = useRef(null);
       
-      // ----- Main App Component -----
-      const App = () => {
-        const [menuOpen, setMenuOpen] = useState(false);
-        const [copied, setCopied] = useState(false);
-        const [currentAmount, setCurrentAmount] = useState(0); // #0 initially, demo updatable
-        const goalAmount = 2400000; // 2.4 Million
-        const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
-        
-        // Refs for animations
-        const logoContainerRef = useRef(null);
-        const heroTitleRef = useRef(null);
-        const heroMetaRef = useRef(null);
-        const visionRef = useRef(null);
-        const moreBulletsRef = useRef([]);
-        const partnershipsRef = useRef(null);
-        const volunteersRef = useRef(null);
-        const menuOverlayRef = useRef(null);
-        const menuLinksRef = useRef([]);
-        const menuIconRef = useRef(null);
-        
-        // Netflix-style logo animation on mount
-        useEffect(() => {
+      // Netflix-style logo animation on mount
+      useEffect(() => {
+        // Small delay to ensure DOM is ready
+        const timer = setTimeout(() => {
           const ctx = gsap.context(() => {
-            // Initial state: dark, small scale
             gsap.set(logoContainerRef.current, { scale: 0.2, opacity: 0, filter: 'blur(8px)' });
-            // Main timeline
+            
             const tl = gsap.timeline();
             tl.to(logoContainerRef.current, {
               scale: 1.2,
@@ -88,7 +121,6 @@
               ease: 'power2.out',
             })
             .add(() => {
-              // Gold flash effect: bright glow + white flash
               gsap.to(logoContainerRef.current, {
                 boxShadow: '0 0 40px rgba(255,215,0,0.9)',
                 duration: 0.2,
@@ -112,348 +144,346 @@
               { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' },
               '-=0.3'
             )
-            .fromTo(heroMetaRef.current.children, 
+            .fromTo(heroMetaRef.current, 
               { y: 30, opacity: 0 },
-              { y: 0, opacity: 1, stagger: 0.15, duration: 0.7 },
+              { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' },
               '-=0.4'
             );
           });
           return () => ctx.revert();
-        }, []);
+        }, 100);
         
-        // ScrollTrigger for sections
-        useEffect(() => {
-          const ctx = gsap.context(() => {
-            // Our Vision section: reveal title and bullet points
-            gsap.from(visionRef.current, {
+        return () => clearTimeout(timer);
+      }, []);
+      
+      // ScrollTrigger for sections
+      useEffect(() => {
+        const ctx = gsap.context(() => {
+          // Vision section
+          gsap.from(visionRef.current, {
+            scrollTrigger: {
+              trigger: visionRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+          });
+          
+          // Bullet points
+          if (moreBulletsRef.current.length) {
+            gsap.from(moreBulletsRef.current, {
               scrollTrigger: {
                 trigger: visionRef.current,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse',
-              },
-              y: 60,
-              opacity: 0,
-              duration: 0.9,
-              ease: 'power3.out',
-            });
-            
-            // Bullet points staggered
-            if (moreBulletsRef.current.length) {
-              gsap.from(moreBulletsRef.current, {
-                scrollTrigger: {
-                  trigger: visionRef.current,
-                  start: 'top 70%',
-                },
-                y: 40,
-                opacity: 0,
-                stagger: 0.2,
-                duration: 0.7,
-                ease: 'back.out(0.5)',
-              });
-            }
-            
-            // Partnerships + Financial Tracker
-            gsap.from(partnershipsRef.current, {
-              scrollTrigger: {
-                trigger: partnershipsRef.current,
-                start: 'top 80%',
-              },
-              y: 50,
-              opacity: 0,
-              duration: 0.8,
-            });
-            
-            // Volunteers grid items
-            gsap.from(volunteersRef.current, {
-              scrollTrigger: {
-                trigger: volunteersRef.current,
-                start: 'top 85%',
+                start: 'top 70%',
               },
               y: 40,
               opacity: 0,
-              stagger: 0.12,
+              stagger: 0.2,
               duration: 0.7,
-              ease: 'power2.out',
+              ease: 'back.out(0.5)',
             });
+          }
+          
+          // Partnerships
+          gsap.from(partnershipsRef.current, {
+            scrollTrigger: {
+              trigger: partnershipsRef.current,
+              start: 'top 80%',
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
           });
           
-          return () => ctx.revert();
-        }, []);
+          // Volunteers grid
+          gsap.from(volunteersRef.current, {
+            scrollTrigger: {
+              trigger: volunteersRef.current,
+              start: 'top 85%',
+            },
+            y: 40,
+            opacity: 0,
+            stagger: 0.12,
+            duration: 0.7,
+            ease: 'power2.out',
+          });
+        });
         
-        // Menu overlay GSAP animation (fullscreen + staggered links)
-        useEffect(() => {
+        return () => ctx.revert();
+      }, []);
+      
+      // Menu overlay animation
+      useEffect(() => {
+        if (menuOpen) {
+          gsap.set(menuOverlayRef.current, { display: 'flex', opacity: 0 });
+          gsap.to(menuOverlayRef.current, {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power2.inOut',
+          });
+          gsap.fromTo(menuLinksRef.current,
+            { y: 40, opacity: 0 },
+            { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'back.out(0.4)', delay: 0.2 }
+          );
+        } else {
+          gsap.to(menuOverlayRef.current, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.in',
+            onComplete: () => {
+              gsap.set(menuOverlayRef.current, { display: 'none' });
+            },
+          });
+        }
+      }, [menuOpen]);
+      
+      // Hamburger to X morph
+      useEffect(() => {
+        if (menuIconRef.current) {
+          const topLine = menuIconRef.current.querySelector('.line-top');
+          const middleLine = menuIconRef.current.querySelector('.line-middle');
+          const bottomLine = menuIconRef.current.querySelector('.line-bottom');
           if (menuOpen) {
-            gsap.set(menuOverlayRef.current, { display: 'flex', opacity: 0 });
-            gsap.to(menuOverlayRef.current, {
-              opacity: 1,
-              duration: 0.5,
-              ease: 'power2.inOut',
-              display: 'flex',
-            });
-            gsap.fromTo(menuLinksRef.current,
-              { y: 40, opacity: 0 },
-              { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'back.out(0.4)', delay: 0.2 }
-            );
+            gsap.to(topLine, { rotate: 45, y: 8, duration: 0.3 });
+            gsap.to(middleLine, { opacity: 0, duration: 0.2 });
+            gsap.to(bottomLine, { rotate: -45, y: -8, duration: 0.3 });
           } else {
-            gsap.to(menuOverlayRef.current, {
-              opacity: 0,
-              duration: 0.4,
-              ease: 'power2.in',
-              onComplete: () => {
-                gsap.set(menuOverlayRef.current, { display: 'none' });
-              },
-            });
+            gsap.to(topLine, { rotate: 0, y: 0, duration: 0.3 });
+            gsap.to(middleLine, { opacity: 1, duration: 0.2 });
+            gsap.to(bottomLine, { rotate: 0, y: 0, duration: 0.3 });
           }
-        }, [menuOpen]);
-        
-        // Hamburger -> X morph animation (using GSAP for rotation)
-        useEffect(() => {
-          if (menuIconRef.current) {
-            const topLine = menuIconRef.current.querySelector('.line-top');
-            const middleLine = menuIconRef.current.querySelector('.line-middle');
-            const bottomLine = menuIconRef.current.querySelector('.line-bottom');
-            if (menuOpen) {
-              gsap.to(topLine, { rotate: 45, y: 8, duration: 0.3, ease: 'back.out' });
-              gsap.to(middleLine, { opacity: 0, duration: 0.2 });
-              gsap.to(bottomLine, { rotate: -45, y: -8, duration: 0.3, ease: 'back.out' });
-            } else {
-              gsap.to(topLine, { rotate: 0, y: 0, duration: 0.3 });
-              gsap.to(middleLine, { opacity: 1, duration: 0.2 });
-              gsap.to(bottomLine, { rotate: 0, y: 0, duration: 0.3 });
-            }
-          }
-        }, [menuOpen]);
-        
-        const toggleMenu = () => setMenuOpen(prev => !prev);
-        const closeMenu = () => setMenuOpen(false);
-        
-        const handleCopyAccount = async () => {
-          const accountText = "7350104678";
-          try {
-            await navigator.clipboard.writeText(accountText);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-          } catch (err) {
-            console.error("Failed to copy");
-          }
-        };
-        
-        // Update financial amount (demo quick update via button or manual)
-        const updateAmount = (value) => {
-          let newVal = Number(value);
-          if (isNaN(newVal)) newVal = 0;
-          setCurrentAmount(Math.min(newVal, goalAmount));
-        };
-        
-        return (
-          <div className="bg-navy-dark min-h-screen overflow-x-hidden font-sans text-white">
-            {/* Sticky Header */}
-            <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-4 bg-transparent backdrop-blur-sm">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg border border-gold/30 flex items-center justify-center bg-navy-mid" ref={logoContainerRef}>
-                <img 
-                  src="https://image2url.com/r2/default/images/1775492166817-4df4e1ed-3e50-4fc4-96ad-42b628eec777.jpg" 
-                  alt="Beyond Community Logo" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <button 
-                onClick={toggleMenu}
-                className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none group z-50 relative"
-                ref={menuIconRef}
-                aria-label="Menu"
-              >
-                <span className="line-top block w-6 h-0.5 bg-gold mb-1.5 transition-all duration-200"></span>
-                <span className="line-middle block w-6 h-0.5 bg-gold mb-1.5 transition-all duration-200"></span>
-                <span className="line-bottom block w-6 h-0.5 bg-gold transition-all duration-200"></span>
-              </button>
-            </header>
-            
-            {/* Fullscreen Menu Overlay */}
+        }
+      }, [menuOpen]);
+      
+      const toggleMenu = () => setMenuOpen(prev => !prev);
+      const closeMenu = () => setMenuOpen(false);
+      
+      const handleCopyAccount = async () => {
+        try {
+          await navigator.clipboard.writeText("7350104678");
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+          console.error("Failed to copy");
+        }
+      };
+      
+      const updateAmount = (value) => {
+        let newVal = Number(value);
+        if (isNaN(newVal)) newVal = 0;
+        setCurrentAmount(Math.min(Math.max(newVal, 0), goalAmount));
+      };
+      
+      const scrollToSection = (sectionId) => {
+        closeMenu();
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+      
+      return (
+        <div className="bg-[#000066] min-h-screen overflow-x-hidden text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+          {/* Sticky Header */}
+          <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-4 bg-[#000066]/80 backdrop-blur-sm">
             <div 
-              ref={menuOverlayRef}
-              className="fixed inset-0 z-40 bg-navy-deep/95 backdrop-blur-md hidden flex-col justify-center items-center"
-              style={{ display: 'none' }}
+              ref={logoContainerRef}
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg border-2 border-[#FFD700] flex items-center justify-center bg-[#000080]"
             >
-              <nav className="flex flex-col space-y-8 text-center">
-                {['Home', 'Our Vision', 'Partnerships/Support', 'Volunteers'].map((item, idx) => (
-                  <a 
-                    key={item}
-                    href={`#${item.toLowerCase().replace(/[^a-z]/g, '')}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      closeMenu();
-                      const sectionId = item === 'Home' ? 'hero' : 
-                                        item === 'Our Vision' ? 'vision' :
-                                        item === 'Partnerships/Support' ? 'partnerships' : 'volunteers';
-                      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    ref={el => menuLinksRef.current[idx] = el}
-                    className="text-4xl md:text-6xl font-bold text-gold hover:text-white transition-all duration-300 tracking-wider"
-                  >
-                    {item}
-                  </a>
-                ))}
-              </nav>
+              <img 
+                src="https://image2url.com/r2/default/images/1775492166817-4df4e1ed-3e50-4fc4-96ad-42b628eec777.jpg" 
+                alt="Beyond Community Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
-            
-            <main>
-              {/* Hero Section */}
-              <section id="hero" className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-16">
-                <div className="max-w-5xl mx-auto">
-                  <div className="mb-6 flex justify-center">
-                    {/* Logo area already animated via ref */}
+            <button 
+              onClick={toggleMenu}
+              className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none z-50"
+              ref={menuIconRef}
+              aria-label="Menu"
+            >
+              <span className="line-top block w-6 h-0.5 bg-[#FFD700] mb-1.5 transition-all duration-200"></span>
+              <span className="line-middle block w-6 h-0.5 bg-[#FFD700] mb-1.5 transition-all duration-200"></span>
+              <span className="line-bottom block w-6 h-0.5 bg-[#FFD700] transition-all duration-200"></span>
+            </button>
+          </header>
+          
+          {/* Fullscreen Menu Overlay */}
+          <div 
+            ref={menuOverlayRef}
+            className="fixed inset-0 z-40 bg-[#000066]/95 backdrop-blur-md hidden flex-col justify-center items-center"
+          >
+            <nav className="flex flex-col space-y-8 text-center">
+              {['Home', 'Our Vision', 'Partnerships', 'Volunteers'].map((item, idx) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item === 'Home' ? 'hero' : item.toLowerCase())}
+                  ref={el => menuLinksRef.current[idx] = el}
+                  className="text-4xl md:text-6xl font-bold text-[#FFD700] hover:text-white transition-all duration-300 tracking-wider"
+                >
+                  {item}
+                </button>
+              ))}
+            </nav>
+          </div>
+          
+          <main>
+            {/* Hero Section */}
+            <section id="hero" className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-16">
+              <div className="max-w-5xl mx-auto">
+                <h1 ref={heroTitleRef} className="text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-wider leading-tight">
+                  <span className="text-[#FFD700]">THE BEYOND</span><br />
+                  <span className="text-white">CONFERENCE 2026</span>
+                </h1>
+                <div ref={heroMetaRef} className="mt-8 space-y-4 text-lg md:text-2xl font-light">
+                  <div className="inline-block bg-[#FFD700]/10 backdrop-blur-sm px-6 py-2 rounded-full border border-[#FFD700]/40">
+                    <span className="text-[#FFD700] font-bold text-3xl md:text-5xl mr-3">✦</span> 
+                    THEME: <span className="font-bold text-[#FFD700]">"MORE"</span> 
+                    <span className="text-[#FFD700] font-bold text-3xl md:text-5xl ml-3">✦</span>
                   </div>
-                  <h1 ref={heroTitleRef} className="text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-wider leading-tight">
-                    <span className="text-gold">THE BEYOND</span><br />
-                    <span className="text-white">CONFERENCE 2026</span>
-                  </h1>
-                  <div ref={heroMetaRef} className="mt-8 space-y-4 text-lg md:text-2xl font-light">
-                    <div className="inline-block bg-gold/10 backdrop-blur-sm px-6 py-2 rounded-full border border-gold/40">
-                      <span className="text-gold font-bold text-3xl md:text-5xl mr-3">✦</span> THEME: <span className="font-bold text-gold">"MORE"</span> <span className="text-gold font-bold text-3xl md:text-5xl ml-3">✦</span>
-                    </div>
-                    <p className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-white/90">
-                      <span>📍 Venue: College of Medicine, LUTH, Lagos</span>
-                      <span>📅 Date: 30th May 2026</span>
-                      <span>🎤 Convener: Bookola</span>
+                  <p className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-white/90">
+                    <span>📍 Venue: College of Medicine, LUTH, Lagos</span>
+                    <span>📅 Date: 30th May 2026</span>
+                    <span>🎤 Convener: Bookola</span>
+                  </p>
+                </div>
+              </div>
+              <div className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce">
+                <div className="w-6 h-10 border-2 border-[#FFD700] rounded-full flex justify-center">
+                  <div className="w-1 h-3 bg-[#FFD700] rounded-full mt-2 animate-pulse"></div>
+                </div>
+              </div>
+            </section>
+            
+            {/* Our Vision Section */}
+            <section id="our vision" className="py-20 px-6 md:px-12 bg-[#000080]/30">
+              <div className="max-w-6xl mx-auto" ref={visionRef}>
+                <h2 className="text-4xl md:text-6xl font-bold text-[#FFD700] border-l-8 border-[#FFD700] pl-6 mb-12">Our Vision</h2>
+                <div className="grid md:grid-cols-2 gap-12">
+                  <div>
+                    <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 italic">
+                      "To ignite a global movement where every believer steps into <span className="text-[#FFD700] font-bold">MORE</span> — beyond limits, beyond imagination, beyond the ordinary."
                     </p>
                   </div>
-                </div>
-                <div className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce">
-                  <div className="w-6 h-10 border-2 border-gold rounded-full flex justify-center">
-                    <div className="w-1 h-3 bg-gold rounded-full mt-2 animate-pulse"></div>
-                  </div>
-                </div>
-              </section>
-              
-              {/* Our Vision Section */}
-              <section id="vision" className="py-20 px-6 md:px-12 bg-navy-mid/30">
-                <div className="max-w-6xl mx-auto" ref={visionRef}>
-                  <h2 className="text-4xl md:text-6xl font-bold text-gold border-l-8 border-gold pl-6 mb-12">Our Vision</h2>
-                  <div className="grid md:grid-cols-2 gap-12">
-                    <div>
-                      <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 italic">
-                        "To ignite a global movement where every believer steps into <span className="text-gold font-bold">MORE</span> — beyond limits, beyond imagination, beyond the ordinary."
-                      </p>
-                    </div>
-                    <div className="space-y-6">
-                      {[
-                        { title: "Who you are", desc: "Discover your true identity in Christ — royalty and purpose." },
-                        { title: "What you can achieve", desc: "Unlock divine strategies for unprecedented impact." },
-                        { title: "What God can do", desc: "Experience miraculous testimonies and supernatural power." },
-                        { title: "What is waiting to be discovered", desc: "Step into realms of glory, wisdom, and hidden treasures." }
-                      ].map((item, idx) => (
-                        <div 
-                          key={idx}
-                          ref={el => moreBulletsRef.current[idx] = el}
-                          className="bg-white/5 backdrop-blur-sm p-5 rounded-xl border-l-4 border-gold hover:shadow-gold/20 hover:shadow-lg transition-all"
-                        >
-                          <h3 className="text-2xl font-bold text-gold">{item.title}</h3>
-                          <p className="text-white/80 mt-1">{item.desc}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-              
-              {/* Partnerships & Support + Financial Tracker */}
-              <section id="partnerships" className="py-20 px-6 md:px-12" ref={partnershipsRef}>
-                <div className="max-w-5xl mx-auto">
-                  <h2 className="text-4xl md:text-5xl font-bold text-gold text-center mb-6">Partnerships & Support</h2>
-                  <div className="bg-navy-mid/60 rounded-3xl p-6 md:p-10 shadow-2xl border border-gold/30">
-                    <div className="mb-8">
-                      <div className="flex justify-between text-sm md:text-base font-semibold mb-2">
-                        <span className="text-white/80">Financial Progress</span>
-                        <span className="text-gold">₦{currentAmount.toLocaleString()} / ₦{goalAmount.toLocaleString()}</span>
-                      </div>
-                      <div className="w-full bg-navy-dark rounded-full h-5 overflow-hidden shadow-inner">
-                        <div 
-                          className="bg-gradient-to-r from-gold to-yellow-400 h-5 rounded-full transition-all duration-700 ease-out"
-                          style={{ width: `${percentage}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-right text-xs text-white/50 mt-1">Goal: ₦2.4 Million</p>
-                    </div>
-                    
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-8 p-4 bg-black/30 rounded-2xl">
-                      <div className="flex-1 text-center md:text-left">
-                        <p className="text-sm text-white/70">Bank Transfer Details</p>
-                        <div className="flex flex-wrap items-center gap-3 mt-1">
-                          <span className="font-mono text-xl font-bold tracking-wider text-gold">7350104678</span>
-                          <span className="text-white">| Wema Bank</span>
-                          <span className="text-white/90">Bukola D. Adewuyi</span>
-                        </div>
-                      </div>
-                      <button 
-                        onClick={handleCopyAccount}
-                        className="bg-gold text-navy-deep font-bold py-2 px-6 rounded-full flex items-center gap-2 hover:bg-white transition-all duration-300 shadow-lg"
-                      >
-                        📋 Copy Account Number
-                      </button>
-                    </div>
-                    {/* Quick update demo - for manual current amount (admin use) */}
-                    <div className="mt-6 flex flex-wrap justify-end items-center gap-3 pt-4 border-t border-white/10">
-                      <span className="text-xs text-white/50">Demo update (adjust current ₦):</span>
-                      <input 
-                        type="number" 
-                        value={currentAmount}
-                        onChange={(e) => updateAmount(e.target.value)}
-                        className="bg-navy-dark border border-gold/50 rounded-lg px-3 py-1 w-36 text-gold text-sm focus:outline-none"
-                        placeholder="Enter amount"
-                      />
-                      <button onClick={() => updateAmount(1200000)} className="text-xs bg-gold/20 px-3 py-1 rounded-full text-gold">Set ₦1.2M</button>
-                      <button onClick={() => updateAmount(goalAmount)} className="text-xs bg-gold/20 px-3 py-1 rounded-full text-gold">Goal ₦2.4M</button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              
-              {/* Volunteers Section */}
-              <section id="volunteers" className="py-20 px-6 md:px-12 bg-navy-mid/40">
-                <div className="max-w-6xl mx-auto">
-                  <h2 className="text-4xl md:text-5xl font-bold text-gold text-center mb-12">Become a Volunteer</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5" ref={volunteersRef}>
+                  <div className="space-y-6">
                     {[
-                      { name: "Registration", icon: "📝", desc: "Welcome desk & attendee check-in" },
-                      { name: "Media", icon: "🎥", desc: "Photography, livestream & content" },
-                      { name: "Ushering/Protocol", icon: "🚪", desc: "Guests direction & order" },
-                      { name: "Welfare", icon: "🍲", desc: "Hospitality & refreshments" },
-                      { name: "Logistics", icon: "🚚", desc: "Setup, transport & materials" }
-                    ].map((role, idx) => (
-                      <div key={idx} className="bg-gradient-to-b from-navy-deep to-navy-mid p-6 rounded-2xl text-center border border-gold/30 hover:border-gold transition-all duration-300 group">
-                        <div className="text-5xl mb-3">{role.icon}</div>
-                        <h3 className="text-xl font-bold text-gold mb-2">{role.name}</h3>
-                        <p className="text-sm text-white/70">{role.desc}</p>
-                        <button className="mt-4 text-gold border border-gold/50 rounded-full px-4 py-1 text-xs hover:bg-gold hover:text-navy-deep transition-all">Join Team</button>
+                      { title: "Who you are", desc: "Discover your true identity in Christ — royalty and purpose." },
+                      { title: "What you can achieve", desc: "Unlock divine strategies for unprecedented impact." },
+                      { title: "What God can do", desc: "Experience miraculous testimonies and supernatural power." },
+                      { title: "What is waiting to be discovered", desc: "Step into realms of glory, wisdom, and hidden treasures." }
+                    ].map((item, idx) => (
+                      <div 
+                        key={idx}
+                        ref={el => moreBulletsRef.current[idx] = el}
+                        className="bg-white/5 backdrop-blur-sm p-5 rounded-xl border-l-4 border-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.2)] transition-all"
+                      >
+                        <h3 className="text-2xl font-bold text-[#FFD700]">{item.title}</h3>
+                        <p className="text-white/80 mt-1">{item.desc}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-              </section>
-              
-              {/* Footer */}
-              <footer className="py-10 text-center border-t border-gold/20 text-white/60 text-sm">
-                <p>© 2026 The Beyond Community — "MORE" Conference. All Rights Reserved.</p>
-                <p className="mt-2">College of Medicine, LUTH, Lagos | 30th May 2026</p>
-              </footer>
-            </main>
-            
-            {/* Toast Notification */}
-            {copied && (
-              <div className="fixed bottom-6 right-6 z-50 bg-gold text-navy-deep px-5 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold toast-slide">
-                <span>✅</span> Copied! 7350104678
               </div>
-            )}
-          </div>
-        );
-      };
-      
-      // Bootstrap the React app into root
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-        const root = createRoot(rootElement);
-        root.render(<App />);
-      }
-    </script>
-  </body>
+            </section>
+            
+            {/* Partnerships Section */}
+            <section id="partnerships" className="py-20 px-6 md:px-12" ref={partnershipsRef}>
+              <div className="max-w-5xl mx-auto">
+                <h2 className="text-4xl md:text-5xl font-bold text-[#FFD700] text-center mb-6">Partnerships & Support</h2>
+                <div className="bg-[#000080]/60 rounded-3xl p-6 md:p-10 shadow-2xl border border-[#FFD700]/30">
+                  <div className="mb-8">
+                    <div className="flex justify-between text-sm md:text-base font-semibold mb-2">
+                      <span className="text-white/80">Financial Progress</span>
+                      <span className="text-[#FFD700]">₦{currentAmount.toLocaleString()} / ₦{goalAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="w-full bg-[#000066] rounded-full h-5 overflow-hidden shadow-inner">
+                      <div 
+                        className="bg-gradient-to-r from-[#FFD700] to-yellow-400 h-5 rounded-full transition-all duration-700 ease-out"
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-right text-xs text-white/50 mt-1">Goal: ₦2.4 Million</p>
+                  </div>
+                  
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-8 p-4 bg-black/30 rounded-2xl">
+                    <div className="flex-1 text-center md:text-left">
+                      <p className="text-sm text-white/70">Bank Transfer Details</p>
+                      <div className="flex flex-wrap items-center gap-3 mt-1">
+                        <span className="font-mono text-xl font-bold tracking-wider text-[#FFD700]">7350104678</span>
+                        <span className="text-white">| Wema Bank</span>
+                        <span className="text-white/90">Bukola D. Adewuyi</span>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={handleCopyAccount}
+                      className="bg-[#FFD700] text-[#000066] font-bold py-2 px-6 rounded-full flex items-center gap-2 hover:bg-white transition-all duration-300 shadow-lg"
+                    >
+                      📋 Copy Account Number
+                    </button>
+                  </div>
+                  
+                  {/* Demo amount updater */}
+                  <div className="mt-6 flex flex-wrap justify-end items-center gap-3 pt-4 border-t border-white/10">
+                    <span className="text-xs text-white/50">Quick update (demo):</span>
+                    <input 
+                      type="number" 
+                      value={currentAmount}
+                      onChange={(e) => updateAmount(e.target.value)}
+                      className="bg-[#000066] border border-[#FFD700]/50 rounded-lg px-3 py-1 w-36 text-[#FFD700] text-sm focus:outline-none"
+                      placeholder="Enter amount"
+                    />
+                    <button onClick={() => updateAmount(1200000)} className="text-xs bg-[#FFD700]/20 px-3 py-1 rounded-full text-[#FFD700] hover:bg-[#FFD700]/30">Set ₦1.2M</button>
+                    <button onClick={() => updateAmount(goalAmount)} className="text-xs bg-[#FFD700]/20 px-3 py-1 rounded-full text-[#FFD700] hover:bg-[#FFD700]/30">Full Goal</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            
+            {/* Volunteers Section */}
+            <section id="volunteers" className="py-20 px-6 md:px-12 bg-[#000080]/40">
+              <div className="max-w-6xl mx-auto">
+                <h2 className="text-4xl md:text-5xl font-bold text-[#FFD700] text-center mb-12">Volunteer Teams</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5" ref={volunteersRef}>
+                  {[
+                    { name: "Registration", icon: "📝", desc: "Welcome desk & check-in" },
+                    { name: "Media", icon: "🎥", desc: "Photography & content" },
+                    { name: "Ushering", icon: "🚪", desc: "Guest direction" },
+                    { name: "Welfare", icon: "🍲", desc: "Hospitality" },
+                    { name: "Logistics", icon: "🚚", desc: "Setup & transport" }
+                  ].map((role, idx) => (
+                    <div key={idx} className="bg-gradient-to-b from-[#000066] to-[#000080] p-6 rounded-2xl text-center border border-[#FFD700]/30 hover:border-[#FFD700] transition-all duration-300 group">
+                      <div className="text-5xl mb-3">{role.icon}</div>
+                      <h3 className="text-xl font-bold text-[#FFD700] mb-2">{role.name}</h3>
+                      <p className="text-sm text-white/70">{role.desc}</p>
+                      <button className="mt-4 text-[#FFD700] border border-[#FFD700]/50 rounded-full px-4 py-1 text-xs hover:bg-[#FFD700] hover:text-[#000066] transition-all">Join Team</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+            
+            {/* Footer */}
+            <footer className="py-10 text-center border-t border-[#FFD700]/20 text-white/60 text-sm">
+              <p>© 2026 The Beyond Community — "MORE" Conference. All Rights Reserved.</p>
+              <p className="mt-2">College of Medicine, LUTH, Lagos | 30th May 2026</p>
+            </footer>
+          </main>
+          
+          {/* Toast Notification */}
+          {copied && (
+            <div className="fixed bottom-6 right-6 z-50 bg-[#FFD700] text-[#000066] px-5 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold toast-slide">
+              <span>✅</span> Copied! 7350104678
+            </div>
+          )}
+        </div>
+      );
+    };
+    
+    // Render the app
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
 </html>
